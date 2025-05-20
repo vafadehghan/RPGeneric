@@ -4,11 +4,19 @@ extends CharacterBody2D
 const SPEED = 100.0
 const JUMP_VELOCITY = -400.0
 var current_dir = "none"
+var enemy_in_attack_range = false;
+var enemy_attack_cooldown = true;
+var health = 100
+var alive = true;
+signal hit
 
 func _physics_process(delta: float) -> void:
 	player_movement(delta)
 	
 func player_movement(delta):
+	if Input.is_action_pressed("ui_accept"):
+		current_dir = "attack"
+		play_anim(0)
 	if Input.is_action_pressed("ui_right"):
 		current_dir = "right"
 		play_anim(1)
@@ -61,3 +69,24 @@ func play_anim(movement):
 				anim.play("front_walk")
 			else:
 				anim.play("front_idle")
+		"attack":
+			anim.play("attack")
+
+func _on_player_hitbox_body_entered(body: Node2D) -> void:
+	enemy_in_attack_range = true
+	if(body.has_method("attack")):
+		body.attack()
+	
+func _on_player_hitbox_body_exited(body: Node2D) -> void:
+	enemy_in_attack_range = false
+	if(body.has_method("stop_attack")):
+		body.stop_attack()
+	
+func enemy_attack():
+	print("Damage!")
+	hit.emit()
+	$enemy_cooldown_timer.start()
+
+
+func _on_enemy_cooldown_timer_timeout() -> void:
+	enemy_attack_cooldown = false

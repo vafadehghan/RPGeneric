@@ -1,9 +1,11 @@
-[gd_scene load_steps=9 format=4 uid="uid://bo7ip8wxeq4a7"]
+[gd_scene load_steps=11 format=4 uid="uid://bo7ip8wxeq4a7"]
 
 [ext_resource type="Texture2D" uid="uid://5nx7udv5fp4x" path="res://art/tilesets/plains.png" id="1_4wyf3"]
+[ext_resource type="Script" uid="uid://dpmht15o4i2ix" path="res://scenes/world.gd" id="1_qfnet"]
 [ext_resource type="Texture2D" uid="uid://cohjmllptylc5" path="res://art/tilesets/grass.png" id="2_k0juu"]
 [ext_resource type="Texture2D" uid="uid://crdcwn670cein" path="res://art/objects/objects.png" id="3_71j4m"]
 [ext_resource type="PackedScene" uid="uid://1j8c7hrwpduv" path="res://scenes/player.tscn" id="4_k0juu"]
+[ext_resource type="PackedScene" uid="uid://sm8dj26r754b" path="res://scenes/slime.tscn" id="5_71j4m"]
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_k0juu"]
 texture = ExtResource("1_4wyf3")
@@ -69,11 +71,12 @@ sources/2 = SubResource("TileSetAtlasSource_qfnet")
 
 [node name="world" type="Node2D"]
 y_sort_enabled = true
+script = ExtResource("1_qfnet")
 
 [node name="Cliffs" type="TileMapLayer" parent="."]
 y_sort_enabled = true
 position = Vector2(-407, -13)
-tile_map_data = PackedByteArray("AAAqAAQAAAADAAQAAAAqAAUAAAADAAUAAAAqAAYAAAADAAYAAAApAAQAAAACAAQAAAApAAUAAAACAAUAAAApAAYAAAACAAYAAAAoAAQAAAACAAQAAAAoAAUAAAACAAUAAAAoAAYAAAACAAYAAAAnAAQAAAACAAQAAAAnAAUAAAACAAUAAAAnAAYAAAACAAYAAAAmAAQAAAACAAQAAAAmAAUAAAACAAUAAAAmAAYAAAACAAYAAAAlAAQAAAACAAQAAAAlAAUAAAACAAUAAAAlAAYAAAACAAYAAAAkAAQAAAACAAQAAAAkAAUAAAACAAUAAAAkAAYAAAACAAYAAAAjAAQAAAACAAQAAAAjAAUAAAACAAUAAAAjAAYAAAACAAYAAAAiAAQAAAACAAQAAAAiAAUAAAACAAUAAAAiAAYAAAACAAYAAAAhAAQAAAACAAQAAAAhAAUAAAACAAUAAAAhAAYAAAACAAYAAAAgAAQAAAACAAQAAAAgAAUAAAACAAUAAAAgAAYAAAACAAYAAAAfAAQAAAACAAQAAAAfAAUAAAACAAUAAAAfAAYAAAACAAYAAAAeAAQAAAACAAQAAAAeAAUAAAACAAUAAAAeAAYAAAACAAYAAAAdAAQAAAACAAQAAAAdAAUAAAACAAUAAAAdAAYAAAACAAYAAAAcAAQAAAACAAQAAAAcAAUAAAACAAUAAAAcAAYAAAACAAYAAAAbAAQAAAACAAQAAAAbAAUAAAACAAUAAAAbAAYAAAACAAYAAAAaAAQAAAACAAQAAAAaAAUAAAACAAUAAAAaAAYAAAACAAYAAAAZAAQAAAACAAQAAAAZAAUAAAACAAUAAAAZAAYAAAACAAYAAAA=")
+tile_map_data = PackedByteArray("AAAZAAYAAAACAAQAAAAaAAYAAAACAAQAAAAbAAYAAAACAAQAAAAcAAYAAAACAAQAAAAdAAYAAAACAAQAAAAeAAYAAAACAAQAAAAfAAYAAAACAAQAAAAgAAYAAAACAAQAAAAhAAYAAAACAAQAAAAiAAYAAAACAAQAAAAjAAYAAAACAAQAAAAkAAYAAAACAAQAAAAlAAYAAAACAAQAAAAmAAYAAAACAAQAAAAnAAYAAAACAAQAAAAoAAYAAAACAAQAAAApAAYAAAACAAQAAAAqAAYAAAADAAQAAAAZAAcAAAACAAUAAAAZAAgAAAACAAYAAAAaAAcAAAACAAUAAAAaAAgAAAACAAYAAAAbAAcAAAACAAUAAAAbAAgAAAACAAYAAAAcAAcAAAACAAUAAAAcAAgAAAACAAYAAAAdAAcAAAACAAUAAAAdAAgAAAACAAYAAAAeAAcAAAACAAUAAAAeAAgAAAACAAYAAAAfAAcAAAACAAUAAAAfAAgAAAACAAYAAAAgAAcAAAACAAUAAAAgAAgAAAACAAYAAAAhAAcAAAACAAUAAAAhAAgAAAACAAYAAAAiAAcAAAACAAUAAAAiAAgAAAACAAYAAAAjAAcAAAACAAUAAAAjAAgAAAACAAYAAAAkAAcAAAACAAUAAAAkAAgAAAACAAYAAAAlAAcAAAACAAUAAAAlAAgAAAACAAYAAAAmAAcAAAACAAUAAAAmAAgAAAACAAYAAAAnAAcAAAACAAUAAAAnAAgAAAACAAYAAAAoAAcAAAACAAUAAAAoAAgAAAACAAYAAAApAAcAAAACAAUAAAApAAgAAAACAAYAAAAqAAcAAAADAAUAAAAqAAgAAAADAAYAAAA=")
 tile_set = SubResource("TileSet_i7141")
 
 [node name="Ground" type="TileMapLayer" parent="."]
@@ -83,7 +86,17 @@ tile_set = SubResource("TileSet_i7141")
 
 [node name="Trees" type="TileMapLayer" parent="."]
 y_sort_enabled = true
-tile_map_data = PackedByteArray("AAAFAAIAAgAAAAUAAAAJAAIAAgAAAAUAAAA=")
+tile_map_data = PackedByteArray("AAAFAAIAAgAAAAUAAAAQAAIAAgAAAAUAAAA=")
 tile_set = SubResource("TileSet_i7141")
 
 [node name="player" parent="." instance=ExtResource("4_k0juu")]
+
+[node name="slime" parent="." instance=ExtResource("5_71j4m")]
+position = Vector2(57, 31)
+
+[node name="Enemy_spawn_timer" type="Timer" parent="."]
+wait_time = 5.0
+autostart = true
+
+[connection signal="player_damaged" from="slime" to="." method="_on_slime_player_damaged"]
+[connection signal="timeout" from="Enemy_spawn_timer" to="." method="_on_enemy_spawn_timer_timeout"]
